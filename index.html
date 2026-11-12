@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Courses">
+<meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111113" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Courses</title>
+<style>
+:root{
+  --bg:#f4f3ef; --card:#ffffff; --ink:#1c1c1e; --muted:#6e6e73; --line:#ebe9e3; --soft:#f0eee9;
+  --carrefour:#2563eb; --biocoop:#15803d; --marcel:#c2410c; --on:#ffffff; --danger:#dc2626;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 18px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#111113; --card:#1c1c1f; --ink:#f2f2f4; --muted:#9b9ba2; --line:#2b2b30; --soft:#26262a;
+    --carrefour:#6ea8ff; --biocoop:#4ade80; --marcel:#fb923c; --on:#111113; --danger:#f87171;
+    --shadow:0 1px 2px rgba(0,0,0,.4); }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(170px + env(safe-area-inset-bottom));min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 16px 6px}
+.top{display:flex;align-items:center;gap:8px}
+h1{font-size:30px;margin:0;flex:1;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:13px;margin-top:-2px}
+.iconbtn{width:40px;height:40px;border-radius:12px;border:0;background:var(--card);box-shadow:var(--shadow);display:grid;place-items:center;font-size:18px}
+.iconbtn.on{background:#facc15;color:#111}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:15px;font-weight:600;display:flex;gap:7px;align-items:center}
+.tab .dot{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.tab .n{opacity:.65;font-weight:500;font-variant-numeric:tabular-nums}
+.tab.on{background:var(--c);border-color:var(--c);color:var(--on)}
+.tab.on .dot{background:var(--on)}
+
+.banner{margin:8px 12px 0;padding:12px 14px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.banner b{display:block;margin-bottom:2px}
+.banner button{border:0;background:none;color:var(--muted);font-size:20px;line-height:1;padding:0 2px}
+
+#sug{margin:10px 0 0}
+.sug-h{display:flex;align-items:center;padding:0 16px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;gap:8px}
+.sug-h span{flex:1}
+.sug-h button{border:0;background:none;color:var(--muted);font-size:13px;text-transform:none;letter-spacing:0;font-weight:500}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:8px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;background:var(--card);box-shadow:var(--shadow);border-radius:12px;padding:8px 12px;font-size:15px;display:flex;align-items:center;gap:7px;text-align:left}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.chip small{display:block;font-size:11px;color:var(--muted)}
+.chip.redo{background:var(--soft);box-shadow:none;font-weight:600}
+
+.store{margin:14px 12px 0;background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.store-h{display:flex;align-items:center;gap:10px;padding:13px 14px 9px 16px;position:relative}
+.store-h::before{content:"";position:absolute;left:0;top:12px;bottom:8px;width:5px;border-radius:0 4px 4px 0;background:var(--c)}
+.sname{font-weight:800;font-size:19px;letter-spacing:-.01em}
+.scount{flex:1;color:var(--muted);font-size:14px}
+.finish{border:0;background:var(--c);color:var(--on);border-radius:10px;padding:7px 12px;font-size:14px;font-weight:700}
+.aisle{padding:12px 16px 5px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:flex;gap:7px;align-items:center}
+.aisle span{font-size:15px;letter-spacing:0}
+.item{display:flex;align-items:center;gap:12px;padding:9px 6px 9px 16px;min-height:54px;border-top:1px solid var(--line);user-select:none;-webkit-user-select:none}
+.chk{width:27px;height:27px;border-radius:50%;border:2px solid var(--c);flex:none;display:grid;place-items:center;color:var(--on)}
+.chk svg{width:15px;height:15px;opacity:0}
+.item.done .chk{background:var(--c)}
+.item.done .chk svg{opacity:1}
+.ibody{flex:1;min-width:0}
+.name{font-size:17px;word-break:break-word}
+.qty{display:inline-block;font-size:13px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);padding:1px 7px;border-radius:7px;margin-left:4px;vertical-align:1px}
+.note{font-size:13.5px;color:var(--muted);margin-top:1px}
+.item.done .name{text-decoration:line-through;color:var(--muted)}
+.item.done .qty{opacity:.6}
+.more{border:0;background:none;color:var(--muted);width:42px;height:42px;border-radius:10px;font-size:15px;letter-spacing:1px;flex:none}
+.done-h{border-top:1px solid var(--line);margin-top:6px}
+
+.empty{text-align:center;color:var(--muted);padding:40px 28px 10px}
+.empty .big{font-size:44px}
+.empty h3{color:var(--ink);margin:8px 0 6px;font-size:19px}
+.empty p{margin:6px 0;font-size:15px}
+.empty code{background:var(--card);padding:2px 6px;border-radius:6px;font:inherit;font-size:14px;color:var(--ink);display:inline-block;margin:3px 0}
+.empty.small{padding:24px}
+
+/* Composer */
+.composer{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:16px 12px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--bg) 30%);transition:transform .15s}
+.panel{background:var(--card);border-radius:16px;box-shadow:var(--shadow);margin-bottom:8px;overflow:hidden;display:none;max-height:42vh;overflow-y:auto}
+.panel.show{display:block}
+.pv{padding:10px 14px;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line)}
+.pv div{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:2px 0}
+.pv b{color:var(--ink);font-size:15px}
+.pv i{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block}
+.ac{display:flex;width:100%;border:0;background:none;text-align:left;padding:10px 14px;gap:10px;align-items:center;border-top:1px solid var(--line);font-size:16px}
+.ac:first-child{border-top:0}
+.ac i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+.ac span{flex:1}
+.ac small{color:var(--muted);font-size:12px}
+.bar{display:flex;gap:6px;align-items:center;background:var(--card);border-radius:18px;box-shadow:0 2px 6px rgba(0,0,0,.08),0 10px 30px rgba(0,0,0,.08);padding:6px}
+.bar input{flex:1;border:0;background:transparent;font-size:17px;padding:10px 8px;color:var(--ink);outline:none;min-width:0}
+.bar input::placeholder{color:var(--muted)}
+.mic,.send{width:46px;height:46px;border-radius:14px;border:0;display:grid;place-items:center;flex:none}
+.mic{background:var(--ink);color:var(--bg)}
+.send{background:var(--soft)}
+.mic svg,.send svg{width:22px;height:22px}
+.hint{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+
+/* Sheets */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--card);border-radius:22px 22px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));max-height:90vh;overflow-y:auto;transform:translateY(105%);transition:transform .25s ease}
+.sheet.show{transform:none}
+.grab{width:38px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+.sheet h2{margin:2px 0 12px;font-size:21px}
+.sheet h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:20px 0 8px}
+.fld{display:block;margin-bottom:12px}
+.fld>span{display:block;font-size:13px;color:var(--muted);margin-bottom:5px;font-weight:600}
+.fld input,.fld textarea{width:100%;font:inherit;font-size:17px;padding:11px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);outline:none}
+.fld input:focus,.fld textarea:focus{border-color:var(--ink)}
+.qrow{display:flex;gap:8px}
+.qrow input{flex:1}
+.step{width:48px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);font-size:22px}
+.seg{display:flex;gap:6px;margin-bottom:12px}
+.seg button{flex:1;padding:10px 4px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);font-weight:700;font-size:14px}
+.seg button.on{background:var(--c);border-color:var(--c);color:var(--on)}
+.agrid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.agrid button{padding:7px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);font-size:14px}
+.agrid button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.actions{display:flex;gap:10px;margin-top:8px}
+.btn{flex:1;padding:14px;border-radius:14px;border:0;font-weight:700;font-size:16px;background:var(--soft)}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn.danger{color:var(--danger);flex:.6}
+.lst{border-radius:14px;background:var(--bg);overflow:hidden}
+.lrow{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;border-top:1px solid var(--line);font-size:15px}
+.lrow:first-child{border-top:0}
+.lrow span{flex:1}
+.lrow button{width:36px;height:34px;border-radius:9px;border:0;background:var(--card);font-size:15px}
+.lrow button:disabled{opacity:.3}
+.wide{display:block;width:100%;text-align:left;padding:13px 14px;border:0;border-radius:12px;background:var(--bg);margin-bottom:8px;font-size:16px}
+.wide.red{color:var(--danger)}
+.small-muted{font-size:13px;color:var(--muted);line-height:1.45}
+
+/* Voice */
+.listen{position:fixed;inset:0;z-index:30;background:color-mix(in srgb,var(--bg) 94%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+.listen.show{display:flex}
+.pulse{width:110px;height:110px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;animation:pl 1.4s infinite;border:0}
+.pulse svg{width:44px;height:44px}
+@keyframes pl{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ink) 35%,transparent)}100%{box-shadow:0 0 0 34px transparent}}
+.ltext{font-size:22px;margin:28px 0 8px;min-height:60px;max-width:520px;font-weight:600}
+.lhelp{color:var(--muted);font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:11px 14px;border-radius:14px;font-size:14.5px;z-index:40;opacity:0;pointer-events:none;transition:.2s;display:flex;gap:12px;align-items:center;width:max-content;max-width:calc(100vw - 32px);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.toast span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{border:0;background:none;color:#facc15;font-weight:800;padding:0;white-space:nowrap}
+@media (prefers-color-scheme: dark){ .toast button{color:#a16207} }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div style="flex:1"><h1>Courses</h1><div class="sub" id="sub"></div></div>
+    <button class="iconbtn" id="wake" aria-label="Garder l'écran allumé" title="Garder l'écran allumé">🔆</button>
+    <button class="iconbtn" id="share" aria-label="Partager la liste">⤴︎</button>
+    <button class="iconbtn" id="settings" aria-label="Réglages">⚙︎</button>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<div id="banner"></div>
+<section id="sug"></section>
+<main id="list"></main>
+
+<div class="composer" id="composer">
+  <div class="panel" id="panel"></div>
+  <form class="bar" id="form" autocomplete="off">
+    <input id="inp" type="text" enterkeyhint="done" placeholder="Ajouter… ex : 2 kg de pommes chez Biocoop" autocapitalize="sentences">
+    <button type="submit" class="send" id="send" aria-label="Ajouter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button type="button" class="mic" id="mic" aria-label="Dicter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+  </form>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet"></div>
+
+<div class="listen" id="listen">
+  <button class="pulse" id="stopListen" aria-label="Arrêter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+  <div class="ltext" id="ltext">Je t'écoute…</div>
+  <div class="lhelp">ex : « deux kilos de pommes, du lait et du scotch chez Carrefour »<br>Touche le micro pour terminer.</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ---------- Données de référence ---------- */
+const STORES=[
+  {id:'carrefour',name:'Carrefour'},
+  {id:'biocoop',name:'Biocoop'},
+  {id:'marcel',name:'Marcel & Fils'},
+];
+const SID=Object.fromEntries(STORES.map(s=>[s.id,s]));
+const AISLES=[
+  {id:'fl',name:'Fruits & légumes',icon:'🥕'},
+  {id:'boul',name:'Boulangerie',icon:'🥖'},
+  {id:'cremerie',name:'Crèmerie & œufs',icon:'🧀'},
+  {id:'boucherie',name:'Boucherie & charcuterie',icon:'🥩'},
+  {id:'poisson',name:'Poissonnerie',icon:'🐟'},
+  {id:'traiteur',name:'Traiteur & frais',icon:'🥡'},
+  {id:'vrac',name:'Vrac',icon:'🫙'},
+  {id:'epsalee',name:'Épicerie salée',icon:'🥫'},
+  {id:'epsucree',name:'Épicerie sucrée',icon:'🍫'},
+  {id:'boissons',name:'Boissons',icon:'🧃'},
+  {id:'surgeles',name:'Surgelés',icon:'🧊'},
+  {id:'hygiene',name:'Hygiène & beauté',icon:'🧴'},
+  {id:'entretien',name:'Entretien & ménage',icon:'🧽'},
+  {id:'bebe',name:'Bébé',icon:'🍼'},
+  {id:'animaux',name:'Animaux',icon:'🐾'},
+  {id:'bazar',name:'Bazar & exceptionnel',icon:'🧰'},
+  {id:'autre',name:'Autre',icon:'🛒'},
+];
+const AID=Object.fromEntries(AISLES.map(a=>[a.id,a]));
+const ALL_A=AISLES.map(a=>a.id);
+const DEFAULT_ORDER={
+  carrefour:['fl','boul','boucherie','poisson','traiteur','cremerie','epsalee','epsucree','vrac','boissons','surgeles','hygiene','entretien','bebe','animaux','bazar','autre'],
+  biocoop:['fl','vrac','boul','cremerie','traiteur','boucherie','poisson','epsalee','epsucree','boissons','surgeles','hygiene','entretien','bebe','animaux','bazar','autre'],
+  marcel:['fl','boul','cremerie','boucherie','poisson','traiteur','epsalee','epsucree','vrac','boissons','surgeles','hygiene','entretien','bebe','animaux','bazar','autre'],
+};
+const KW={
+  fl:"pomme,poire,banane,orange,citron,citron vert,clementine,mandarine,pamplemousse,kiwi,fraise,framboise,myrtille,mure,cassis,cerise,abricot,peche,nectarine,brugnon,prune,mirabelle,raisin,melon,pasteque,ananas,mangue,papaye,litchi,fruit de la passion,grenade,figue,datte fraiche,avocat,tomate,tomate cerise,salade,laitue,mache,roquette,mesclun,batavia,epinard,carotte,courgette,aubergine,poivron,piment,concombre,oignon,oignon rouge,ail,echalote,poireau,chou,chou fleur,brocoli,chou de bruxelles,celeri,fenouil,radis,betterave,navet,panais,topinambour,potiron,potimarron,courge,butternut,champignon,champignon de paris,haricot vert,petit pois frais,feve,pomme de terre,patate,patate douce,persil,coriandre,basilic,menthe,ciboulette,aneth,thym,romarin,laurier,gingembre,curcuma frais,fruit,legume,endive,artichaut,asperge,blette,cresson,pousse,germe,mais doux epi",
+  boul:"pain,baguette,tradition,ficelle,pain complet,pain aux cereales,pain de campagne,pain de seigle,croissant,pain au chocolat,chocolatine,pain aux raisins,brioche,viennoiserie,chausson,fougasse,focaccia,tarte,flan,eclair,galette des rois,boule de pain",
+  cremerie:"lait,lait demi ecreme,beurre,creme,creme fraiche,creme liquide,yaourt,yogourt,yaourt nature,fromage,emmental,gruyere,comte,parmesan,mozzarella,burrata,chevre,camembert,brie,roquefort,bleu,feta,ricotta,mascarpone,raclette,reblochon,tomme,cantal,mimolette,saint nectaire,morbier,oeuf,skyr,fromage blanc,petit suisse,faisselle,dessert lacte,creme dessert,danette,kefir,fromage rape,rape",
+  boucherie:"viande,boeuf,steak,steak hache,hache,bavette,entrecote,rumsteck,poulet,blanc de poulet,cuisse de poulet,dinde,porc,veau,agneau,canard,magret,lapin,roti,escalope,cote,cotelette,saucisse,merguez,chipolata,saucisse de toulouse,jambon,jambon blanc,jambon cru,lardon,bacon,saucisson,chorizo,terrine,rillette,charcuterie,filet mignon,boudin,andouillette,knacki,coppa,bresaola,pancetta,foie gras",
+  poisson:"poisson,saumon,saumon fume,cabillaud,pave de thon,thon frais,crevette,moule,huitre,colin,merlu,lieu,truite,dorade,bar,sole,lotte,gambas,calamar,encornet,saint jacques,fruits de mer,crabe,homard,langoustine,seiche,poulpe",
+  traiteur:"houmous,hummus,taboule,pizza,quiche,sushi,surimi,gnocchi,pate fraiche,raviolis frais,tarama,tzatziki,plat prepare,nem,samoussa,wrap,tofu,tempeh,seitan,falafel,guacamole,salade composee,gaspacho,pate a pizza,pate brisee,pate feuilletee,pate sablee,pate a tarte",
+  vrac:"vrac",
+  epsalee:"pate,spaghetti,penne,tagliatelle,fusilli,coquillette,macaroni,lasagne,riz,riz basmati,risotto,semoule,couscous,quinoa,boulgour,lentille,pois chiche,haricot rouge,haricot blanc,flageolet,pois casse,huile,huile d olive,huile de tournesol,vinaigre,vinaigre balsamique,sel,poivre,epice,curry,paprika,cumin,herbes de provence,moutarde,mayonnaise,ketchup,sauce,sauce tomate,sauce soja,pesto,coulis,concentre de tomate,tomate pelee,passata,conserve,thon,sardine,maquereau,mais,olive,cornichon,capre,bouillon,bouillon cube,soupe,veloute,chips,biscuit aperitif,cacahuete,pistache,crackers,tuc,galette de riz,nouille,ramen,vermicelle,puree,croutons,lait de coco,cube,levure de biere,graine,graine de lin,graine de chia,tortilla,chapelure,fond de veau,tapenade,anchois,harissa,vinaigrette,petit pois",
+  epsucree:"sucre,sucre roux,sucre glace,cassonade,farine,farine de ble,maizena,fecule,levure,levure chimique,chocolat,chocolat noir,cacao,cafe,cafe moulu,capsule,dosette,the,the vert,tisane,infusion,confiture,miel,pate a tartiner,nutella,cereale,muesli,granola,flocon d avoine,avoine,biscuit,gateau,madeleine,brownie,cookie,palmier,petit beurre,compote,bonbon,chewing gum,vanille,lait concentre,crepe,pancake,beurre de cacahuete,puree d amande,amande,noisette,noix,noix de cajou,raisin sec,abricot sec,datte,pruneau,fruit sec,barre de cereale,gaufre,speculoos,sirop d erable,chocolat en poudre,pepite,caramel",
+  boissons:"eau,eau gazeuse,eau petillante,perrier,badoit,jus,jus d orange,jus de pomme,soda,coca,limonade,ice tea,biere,vin,vin rouge,vin blanc,rose,champagne,cremant,cidre,sirop,kombucha,alcool,rhum,whisky,vodka,gin,pastis,apero,aperitif,lait d avoine,lait d amande,lait de soja,boisson vegetale,lait vegetal,energy drink",
+  surgeles:"surgele,congele,glace,creme glacee,sorbet,esquimau,frite,poisson pane,glacon,legume surgele,pizza surgelee,cordon bleu,nugget,croquette de pomme de terre,potatoes",
+  hygiene:"savon,gel douche,douche,shampoing,shampooing,apres shampoing,apres shampooing,dentifrice,brosse a dent,deodorant,deo,rasoir,lame de rasoir,mousse a raser,coton,coton tige,disque demaquillant,papier toilette,papier wc,pq,mouchoir,serviette hygienique,tampon,protege slip,cup,creme solaire,creme hydratante,creme mains,baume,maquillage,mascara,demaquillant,lingette,vernis,dissolvant,parfum,fil dentaire,bain de bouche,doliprane,paracetamol,pansement,serum physiologique,elastique cheveux,laque,gel cheveux,masque",
+  entretien:"lessive,adoucissant,liquide vaisselle,produit vaisselle,pastille lave vaisselle,tablette lave vaisselle,capsule lave vaisselle,sel lave vaisselle,liquide de rincage,eponge,javel,eau de javel,nettoyant,degraissant,sac poubelle,essuie tout,sopalin,papier alu,papier aluminium,aluminium,film alimentaire,papier cuisson,vinaigre blanc,bicarbonate,savon noir,desinfectant,serpillere,balai,gant de menage,canard wc,anticalcaire,detachant,produit menager,lave vitre,microfibre,pierre d argile,cristaux de soude,desodorisant",
+  bebe:"couche,lait infantile,lait 2eme age,petit pot,lingette bebe,bebe,pour bebe,biberon,tetine,liniment",
+  animaux:"croquette,patee,litiere,friandise pour chien,pour chat,pour chien,os a macher,graine pour oiseau,aquarium",
+  bazar:"radiateur,chauffage,chauffage d appoint,scotch,ruban adhesif,adhesif,pile,piles,ampoule,ampoule led,rallonge,multiprise,chargeur,cable,vis,clou,cheville,colle,outil,tournevis,marteau,perceuse,cadenas,stylo,cahier,feuille,ramette,enveloppe,classeur,cartouche,encre,cartouche d encre,assiette,verre,tasse,mug,bol,couvert,poele,casserole,ustensile,tupperware,boite de conservation,bougie,allumette,briquet,allume feu,cintre,serviette de bain,drap,housse,couette,oreiller,coussin,vetement,chaussette,collant,culotte,slip,t shirt,ventilateur,bouilloire,grille pain,cafetiere,aspirateur,sac aspirateur,fer a repasser,lampe,lampe de poche,guirlande,jouet,cadeau,carte d anniversaire,papier cadeau,emballage cadeau,decoration,plante,pot de fleur,terreau,engrais,jardin,barbecue,charbon,velo,chambre a air,lave glace,essuie glace,huile moteur,bidon,valise,parapluie,tapis,rideau,boite de rangement,panier,etagere,cle usb,souris,clavier,ecouteur,casque,coque,prise,interrupteur,adaptateur,thermometre,balance,poubelle,seau,bassine,etendoir,pince a linge,ciseaux,agrafeuse,agrafe,punaise,post it,gomme,crayon,feutre,peinture,pinceau,mastic,silicone,detecteur de fumee,extincteur,ventouse,piege,anti moustique,insecticide,bache,corde,ficelle de cuisine,papeterie,cartable,trousse,calculatrice,horloge,reveil,cadre,miroir,bocal en verre,thermos,gourde,glaciere,sac isotherme,torchon,nappe,gant,bonnet,echarpe,chausson,parure de lit",
+};
+/* ---------- Normalisation & classement ---------- */
+function deacc(s){return String(s).toLowerCase().replace(/œ/g,'oe').replace(/æ/g,'ae').normalize('NFD').replace(/[̀-ͯ]/g,'')}
+function sing(w){return (w.length>3&&/[sx]$/.test(w)&&!/ss$/.test(w))?w.slice(0,-1):w}
+function toks(s){return deacc(String(s).replace(/pâtés?(?![a-zà-ÿ])/gi,'terrine')).replace(/['’]/g,' ').split(/[^a-z0-9]+/).filter(Boolean).map(sing)}
+const ART=new Set(['de','du','des','la','le','les','l','d','un','une','au','aux','a','en']);
+function pkey(name){const t=toks(name);while(t.length>1&&ART.has(t[0]))t.shift();return t.join(' ')}
+const KW_LIST=[];
+for(const [a,str] of Object.entries(KW))for(const w of str.split(',')){const k=toks(w.trim()).join(' ');if(k)KW_LIST.push([k,a])}
+KW_LIST.sort((x,y)=>y[0].split(' ').length-x[0].split(' ').length||y[0].length-x[0].length);
+function classify(text){
+  const t=' '+toks(text).join(' ')+' ';
+  if(/ (surgele|congele|surgelee|congelee) /.test(t))return 'surgeles';
+  for(const [k,a] of KW_LIST)if(t.includes(' '+k+' '))return a;
+  return 'autre';
+}
+/* ---------- Analyse du texte (clavier ou voix) ---------- */
+const NUMW={une:1,un:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8,neuf:9,dix:10,onze:11,douze:12,treize:13,quatorze:14,quinze:15,seize:16,vingt:20,trente:30,quarante:40,cinquante:50,cent:100};
+const UNITS="kg|kilos?|grammes?|gr|g|litres?|l|cl|ml|paquets?|bo[iî]tes?|bouteilles?|packs?|sachets?|pots?|tranches?|bottes?|barquettes?|rouleaux|rouleau|tubes?|pi[eè]ces?|douzaines?|briques?|canettes?|filets?|bocaux|bocal|lots?|poign[ée]es?|bouquets?|t[eê]tes?|gousses?|morceaux?|parts?|portions?|cartons?|boules?|sacs?|bidons?|flacons?|tablettes?|plaquettes?|bouquets?";
+const NUM_RX="(\\d+(?:¤\\d+)?|(?:une? demi-douzaine|une? douzaine|une? demie?|demie?|"+Object.keys(NUMW).join('|')+")(?=[\\s']|$))";
+const HEAD_RX=new RegExp("^"+NUM_RX+"\\s*(?:("+UNITS+")(?=[\\s']|$))?\\s*(?:(?:de|des)\\s+|d'\\s*)?(.*)$");
+const TAIL_RX=new RegExp("\\s(?:x\\s?)?(\\d+(?:¤\\d+)?)\\s*(?:("+UNITS+"))?\\s*$");
+const STORE_CODE={m:'marcel',b:'biocoop',c:'carrefour'};
+function unitFmt(u){u=u.toLowerCase();if(/^(kg|kilos?)$/.test(u))return 'kg';if(/^(g|gr|grammes?)$/.test(u))return 'g';if(/^(l|litres?)$/.test(u))return 'L';return u}
+function qtyFmt(n,u){
+  let v;
+  if(/^\d/.test(n))v=n.replace('¤',',');
+  else if(/demi-douzaine/.test(n))v='6';
+  else if(/douzaine/.test(n))v='12';
+  else if(/demi/.test(n))v='½';
+  else v=String(NUMW[n]??n);
+  if(!u)return (/^une?$/.test(n))?'':v;
+  return v+' '+unitFmt(u);
+}
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
+function parseText(text){
+  let t=' '+String(text).replace(/[’`]/g,"'").replace(/\s+/g,' ').toLowerCase()+' ';
+  t=t.replace(/(\d)[,.](\d)/g,'$1¤$2');
+  t=t.replace(/marcel(?:\s*(?:&|et|and|e)\s*fils?)?/g,' §m§ ').replace(/bio\s*-?\s*coop/g,' §b§ ').replace(/carr?efour|carouf|carrouf/g,' §c§ ');
+  const ments=[...new Set(t.match(/§[mbc]§/g)||[])];
+  const segs=t.split(/\s*(?:[,;:\n!?]|\.(?!\d)|\set\s|\spuis\s|\sainsi que\s|\saussi\s)\s*/).filter(s=>s.trim());
+  // Un seul magasin cité, au tout début (« chez Biocoop : … ») ou dans le dernier élément (« … et du pain chez Biocoop ») → vaut pour toute la phrase
+  let globalStore=null;
+  if(ments.length===1&&segs.length){
+    const first=segs[0].trim(),last=segs[segs.length-1];
+    if(/^(?:(?:chez|à la|a la|au|à|a|pour|en)\s+)?§[mbc]§/.test(first)||last.includes(ments[0]))globalStore=STORE_CODE[ments[0][1]];
+  }
+  const out=[];
+  for(let seg of segs){
+    let store=null;
+    seg=seg.replace(/(?:(?:^|\s)(?:chez|à la|a la|au|à|a|pour|de|du|en))?\s*§([mbc])§/g,(m,c)=>{store=STORE_CODE[c];return ' '});
+    seg=seg.replace(/^\s*(?:(?:il (?:me |nous |te )?faut|faut|ajoute[rz]?|rajoute[rz]?|mets|mettre|ach[eè]te[rz]?|prendre|prends|pense[rz]? [àa]|j'ai besoin d[e']\s*|on a besoin d[e']\s*|aussi|encore)\s*)+/,'');
+    let note='';
+    seg=seg.replace(/\(([^)]*)\)/g,(m,n)=>{note=n.trim();return ' '});
+    const nm=seg.match(/\s(pour|remarque|note|si possible|de pr[ée]f[ée]rence|en promo|marque)\s(.*)$/);
+    if(nm){const lead=/^(remarque|note)$/.test(nm[1])?'':nm[1]+' ';note=(note?note+' · ':'')+lead+nm[2].trim();seg=seg.slice(0,nm.index)}
+    seg=seg.trim();
+    let qty='';
+    const h=seg.match(HEAD_RX);
+    if(h&&h[3].trim()){qty=qtyFmt(h[1],h[2]);seg=h[3]}
+    else{const tl=seg.match(TAIL_RX);if(tl&&seg.slice(0,tl.index).trim()){qty=qtyFmt(tl[1],tl[2]);seg=seg.slice(0,tl.index)}}
+    seg=seg.trim().replace(/^(?:(?:du|des|de la|de|le|la|les|un|une|quelques|plusieurs)\s+|de l'|d'|l')/,'').trim();
+    seg=seg.replace(/^[\s\-–:]+|[\s\-–:]+$/g,'').replace(/¤/g,',').replace(/\s+/g,' ');
+    note=note.replace(/¤/g,',').replace(/§[mbc]§/g,'').trim();
+    if(!seg||seg.length<2&&!/\d/.test(seg))continue;
+    out.push({name:cap(seg),qty,note:/^(pour|si|de|en|marque)\s/.test(note)?note:cap(note),store});
+  }
+  return out.map(p=>({...p,store:p.store||globalStore}));
+}
+/* ---------- État ---------- */
+const KEY='courses.v1';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const DAY=864e5;
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v);return true}catch(e){return false}}
+let S;
+function initState(o){
+  S=o&&typeof o==='object'?o:{};
+  S.items=Array.isArray(S.items)?S.items:[];S.hist=S.hist||{};S.trips=Array.isArray(S.trips)?S.trips:[];
+  S.settings=S.settings||{};S.settings.order=S.settings.order||{};
+}
+try{initState(JSON.parse(lsGet(KEY)))}catch(e){initState(null)}
+const view={tab:SID[lsGet('courses.tab')]?lsGet('courses.tab'):'all',sugHidden:lsGet('courses.sugHidden')==='1'};
+function save(){if(!lsSet(KEY,JSON.stringify(S)))toast("⚠️ Impossible d'enregistrer sur cet appareil")}
+const order=st=>{const o=(S.settings.order[st]||DEFAULT_ORDER[st]).filter(a=>AID[a]);return o.concat(ALL_A.filter(a=>!o.includes(a)))};
+function aisleStore(a){
+  const sc={};for(const h of Object.values(S.hist))if(h.aisle===a&&h.store)sc[h.store]=(sc[h.store]||0)+1+(h.count||0);
+  const best=Object.entries(sc).sort((x,y)=>y[1]-x[1])[0];return best?best[0]:null;
+}
+function resolve(p,fallback){
+  const key=pkey(p.name);const h=S.hist[key];
+  const aisle=h?.aisle||classify(p.name+' '+(p.note||''));
+  const store=p.store||fallback||h?.store||(aisle==='bazar'?'carrefour':null)||aisleStore(aisle)||'carrefour';
+  return {key,name:p.name,qty:p.qty||'',note:p.note||'',store,aisle};
+}
+function learn(it){
+  const h=S.hist[it.key]||{count:0,dates:[]};
+  S.hist[it.key]={...h,name:it.name,store:it.store,aisle:it.aisle,qty:it.qty||h.qty||''};
+}
+function addParsed(list,fallback){
+  const added=[];
+  for(const p of list){
+    const r=resolve(p,fallback);
+    const ex=S.items.find(i=>i.key===r.key&&i.store===r.store&&!i.done);
+    if(ex){if(r.qty)ex.qty=r.qty;if(r.note&&!ex.note.includes(r.note))ex.note=ex.note?ex.note+' · '+r.note:r.note;learn(ex);added.push(ex);continue}
+    const it={id:uid(),...r,done:false,added:Date.now()};
+    S.items.push(it);learn(it);added.push(it);
+  }
+  return added;
+}
+function addText(text,viaVoice){
+  const parsed=parseText(text);
+  if(!parsed.length){toast("Je n'ai pas compris 🤔");return}
+  const snap=JSON.stringify(S);
+  const added=addParsed(parsed,view.tab==='all'?null:view.tab);
+  save();render();
+  const names=added.map(i=>i.name+(i.qty?' ('+i.qty+')':'')).join(', ');
+  toast((viaVoice?'🎙️ ':'')+(added.length>1?added.length+' articles : ':'Ajouté : ')+names,snap);
+}
+function toggle(id){
+  const it=S.items.find(i=>i.id===id);if(!it)return;
+  const h=S.hist[it.key]||(S.hist[it.key]={name:it.name,store:it.store,aisle:it.aisle,count:0,dates:[]});
+  h.dates=h.dates||[];
+  if(!it.done){
+    it.done=true;it.doneAt=Date.now();
+    const last=h.dates[h.dates.length-1];
+    if(last&&it.doneAt-last<12*36e5){it.rec='same'}else{h.dates.push(it.doneAt);h.dates=h.dates.slice(-12);it.rec='new'}
+    h.count=(h.count||0)+1;h.lastQty=it.qty;
+  }else{
+    it.done=false;
+    if(it.rec==='new'&&h.dates[h.dates.length-1]===it.doneAt)h.dates.pop();
+    if(it.rec)h.count=Math.max(0,(h.count||1)-1);
+    delete it.rec;delete it.doneAt;
+  }
+  save();render();
+}
+function finish(store){
+  const snap=JSON.stringify(S);
+  const done=S.items.filter(i=>i.store===store&&i.done);
+  if(!done.length)return;
+  S.trips.push({store,date:Date.now(),items:done.map(i=>({name:i.name,qty:i.qty,note:i.note,aisle:i.aisle}))});
+  S.trips=S.trips.slice(-40);
+  S.items=S.items.filter(i=>!(i.store===store&&i.done));
+  save();render();
+  toast(`Courses ${SID[store].name} terminées (${done.length}) 🎉`,snap);
+}
+function redoLast(store){
+  const tr=[...S.trips].reverse().find(t=>t.store===store);if(!tr)return;
+  const snap=JSON.stringify(S);
+  const have=new Set(S.items.filter(i=>i.store===store).map(i=>i.key));
+  const todo=tr.items.filter(x=>!have.has(pkey(x.name))).map(x=>({name:x.name,qty:x.qty,note:x.note,store}));
+  const added=addParsed(todo,store);save();render();
+  toast(added.length?`${added.length} articles repris de la dernière fois`:'Tout y est déjà',added.length?snap:null);
+}
+/* ---------- Suggestions ---------- */
+function suggestions(store){
+  const inList=new Set(S.items.filter(i=>!store||i.store===store).map(i=>i.key));
+  const inAny=new Set(S.items.map(i=>i.key));
+  const now=Date.now();const arr=[];
+  for(const [k,h] of Object.entries(S.hist)){
+    if(inList.has(k)||(!store&&inAny.has(k)))continue;
+    if(store&&h.store!==store)continue;
+    const d=h.dates||[];if(!d.length)continue;
+    const since=now-d[d.length-1];
+    if(since<DAY*.75)continue;
+    let score=(h.count||1)*2,reason='';
+    if(d.length>=2){
+      const iv=(d[d.length-1]-d[0])/(d.length-1);
+      if(iv>DAY*.5){const r=since/iv;
+        if(r>=.85){score+=40*Math.min(r,3);reason=r>=1.3?'à racheter':'tous les '+Math.max(1,Math.round(iv/DAY))+' j'}
+        else score-=8*(1-r);}
+    }
+    if(!reason&&h.count>=3)reason='souvent';
+    arr.push({k,h,score,reason});
+  }
+  return arr.sort((a,b)=>b.score-a.score).slice(0,14);
+}
+/* ---------- Rendu ---------- */
+const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function renderTabs(){
+  const n=s=>S.items.filter(i=>!i.done&&(!s||i.store===s)).length;
+  let h=`<button class="tab${view.tab==='all'?' on':''}" style="--c:var(--ink)" data-act="tab" data-tab="all">Tout <span class="n">${n()}</span></button>`;
+  for(const s of STORES)h+=`<button class="tab${view.tab===s.id?' on':''}" style="--c:var(--${s.id})" data-act="tab" data-tab="${s.id}"><span class="dot"></span>${esc(s.name)} <span class="n">${n(s.id)}</span></button>`;
+  $('#tabs').innerHTML=h;
+  const tot=n(),ns=new Set(S.items.filter(i=>!i.done).map(i=>i.store)).size;
+  $('#sub').textContent=tot?`${tot} article${tot>1?'s':''} à prendre${ns>1?' · '+ns+' magasins':''}`:'Liste vide';
+}
+function renderSug(){
+  const store=view.tab==='all'?null:view.tab;
+  const sg=suggestions(store);
+  const hasTrip=store&&S.trips.some(t=>t.store===store);
+  if(!sg.length&&!hasTrip){$('#sug').innerHTML='';return}
+  let h=`<div class="sug-h"><span>Suggestions</span><button data-act="sugtoggle">${view.sugHidden?'Afficher':'Masquer'}</button></div>`;
+  if(!view.sugHidden){
+    h+='<div class="chips">';
+    if(hasTrip)h+=`<button class="chip redo" data-act="redo" data-store="${store}">↺ Comme la dernière fois</button>`;
+    for(const s of sg)h+=`<button class="chip" style="--c:var(--${s.h.store})" data-act="sug" data-key="${esc(s.k)}"><i></i><span>${esc(s.h.name)}${s.reason?`<small>${esc(s.reason)}</small>`:''}</span></button>`;
+    h+='</div>';
+  }
+  $('#sug').innerHTML=h;
+}
+const itemHTML=i=>`<div class="item${i.done?' done':''}" data-act="toggle" data-id="${i.id}"><span class="chk">${CHECK}</span><div class="ibody"><div class="name">${esc(i.name)}${i.qty?`<span class="qty">${esc(i.qty)}</span>`:''}</div>${i.note?`<div class="note">${esc(i.note)}</div>`:''}</div><button class="more" data-act="edit" data-id="${i.id}" aria-label="Modifier">•••</button></div>`;
+function renderList(){
+  const stores=view.tab==='all'?STORES:[SID[view.tab]];
+  let h='',any=false;
+  for(const st of stores){
+    const its=S.items.filter(i=>i.store===st.id);
+    if(!its.length){if(view.tab!=='all')h+=`<div class="empty small">Rien à prendre chez ${esc(st.name)} pour l'instant.</div>`;continue}
+    any=true;
+    const todo=its.filter(i=>!i.done),done=its.filter(i=>i.done);
+    h+=`<section class="store" style="--c:var(--${st.id})"><div class="store-h"><span class="sname">${esc(st.name)}</span><span class="scount">${todo.length?todo.length+' à prendre':'Tout est pris ✓'}</span>${done.length?`<button class="finish" data-act="finish" data-store="${st.id}">Terminer</button>`:''}</div>`;
+    for(const a of order(st.id)){
+      const g=todo.filter(i=>i.aisle===a);if(!g.length)continue;
+      h+=`<div class="aisle"><span>${AID[a].icon}</span>${esc(AID[a].name)}</div>`+g.sort((x,y)=>x.added-y.added).map(itemHTML).join('');
+    }
+    if(done.length)h+=`<div class="aisle done-h"><span>🛒</span>Dans le caddie · ${done.length}</div>`+done.sort((x,y)=>y.doneAt-x.doneAt).map(itemHTML).join('');
+    h+='</section>';
+  }
+  if(!any&&view.tab==='all')h=`<div class="empty"><div class="big">🧺</div><h3>Ta liste est vide</h3><p>Tape ou dicte ce qu'il te faut, je range tout par magasin et par rayon :</p><p><code>2 kg de pommes chez Biocoop</code><br><code>lait, 6 œufs et du pain</code><br><code>un radiateur et du scotch</code><br><code>farine pour le gâteau</code></p></div>`;
+  $('#list').innerHTML=h;
+}
+function renderBanner(){
+  const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(standalone||!isIOS||lsGet('courses.banner')==='0'){$('#banner').innerHTML='';return}
+  $('#banner').innerHTML=`<div class="banner"><div style="flex:1"><b>Installe l'app sur ton iPhone</b>Dans Safari : bouton Partager <span style="font-size:16px">⎋</span> puis « Sur l'écran d'accueil ». Elle marchera ensuite hors connexion.</div><button data-act="hidebanner" aria-label="Fermer">×</button></div>`;
+}
+function render(){renderTabs();renderBanner();renderSug();renderList();updatePanel()}
+/* ---------- Saisie ---------- */
+const inp=$('#inp');
+function updatePanel(){
+  const v=inp.value.trim();const P=$('#panel');
+  if(!v){P.classList.remove('show');P.innerHTML='';return}
+  const fb=view.tab==='all'?null:view.tab;
+  const parsed=parseText(v).map(p=>resolve(p,fb));
+  let h='';
+  if(parsed.length){
+    h+='<div class="pv">'+parsed.map(r=>`<div style="--c:var(--${r.store})"><b>${esc(r.name)}</b>${r.qty?' · '+esc(r.qty):''}${r.note?' · <em>'+esc(r.note)+'</em>':''} → <i></i> ${esc(SID[r.store].name)} · ${AID[r.aisle].icon} ${esc(AID[r.aisle].name)}</div>`).join('')+'</div>';
+  }
+  if(parsed.length<=1){
+    const q=toks(v).filter(w=>!ART.has(w));
+    if(q.length){
+      const inList=new Set(S.items.filter(i=>!i.done).map(i=>i.key));
+      const m=Object.entries(S.hist).filter(([k])=>!inList.has(k)&&q.every(w=>k.split(' ').some(x=>x.startsWith(w)))).sort((a,b)=>(b[1].count||0)-(a[1].count||0)).slice(0,4);
+      h+=m.map(([k,x])=>`<button class="ac" style="--c:var(--${x.store})" data-act="ac" data-key="${esc(k)}"><i></i><span>${esc(x.name)}</span><small>${esc(SID[x.store]?.name||'')} · ${AID[x.aisle]?.icon||''}</small></button>`).join('');
+    }
+  }
+  P.innerHTML=h;P.classList.toggle('show',!!h);
+}
+inp.addEventListener('input',updatePanel);
+$('#form').addEventListener('submit',e=>{e.preventDefault();const v=inp.value.trim();if(!v){inp.focus();return}addText(v);inp.value='';updatePanel()});
+function addFromHist(k){
+  const h=S.hist[k];if(!h)return;
+  const snap=JSON.stringify(S);
+  const typed=parseText(inp.value)[0];
+  const store=view.tab==='all'?h.store:view.tab;
+  addParsed([{name:h.name,qty:typed?.qty||'',note:typed?.note||'',store}],store);
+  save();render();toast('Ajouté : '+h.name,snap);
+}
+/* ---------- Feuilles (édition / réglages) ---------- */
+function openSheet(html){$('#toast').classList.remove('show');$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#sheet').classList.add('show');$('#scrim').classList.add('show');$('#sheet').scrollTop=0}
+function closeSheet(){$('#sheet').classList.remove('show');$('#scrim').classList.remove('show');document.activeElement?.blur?.()}
+$('#scrim').addEventListener('click',closeSheet);
+let edit=null;
+function openEdit(id){
+  const it=S.items.find(i=>i.id===id);if(!it)return;
+  edit={id,store:it.store,aisle:it.aisle};
+  openSheet(`<h2>Modifier l'article</h2>
+  <label class="fld"><span>Produit</span><input id="f-name" value="${esc(it.name)}" autocapitalize="sentences"></label>
+  <label class="fld"><span>Quantité</span><div class="qrow"><button type="button" class="step" data-act="qty" data-d="-1">−</button><input id="f-qty" value="${esc(it.qty)}" placeholder="ex : 2, 500 g, 1 paquet"><button type="button" class="step" data-act="qty" data-d="1">+</button></div></label>
+  <label class="fld"><span>Remarque</span><textarea id="f-note" rows="2" placeholder="marque, taille, pour quelle recette…">${esc(it.note)}</textarea></label>
+  <div class="fld"><span>Magasin</span></div><div class="seg" id="f-store">${STORES.map(s=>`<button type="button" style="--c:var(--${s.id})" class="${s.id===it.store?'on':''}" data-act="fstore" data-v="${s.id}">${esc(s.name)}</button>`).join('')}</div>
+  <div class="fld"><span>Rayon</span></div><div class="agrid" id="f-aisle">${AISLES.map(a=>`<button type="button" class="${a.id===it.aisle?'on':''}" data-act="faisle" data-v="${a.id}">${a.icon} ${esc(a.name)}</button>`).join('')}</div>
+  <p class="small-muted">Le magasin et le rayon sont mémorisés pour la prochaine fois.</p>
+  <div class="actions"><button class="btn danger" data-act="del">Supprimer</button><button class="btn primary" data-act="savedit">Enregistrer</button></div>`);
+}
+function bumpQty(d){
+  const f=$('#f-qty');const m=f.value.trim().match(/^(\d+(?:[.,]\d+)?)(.*)$/);
+  if(m){let n=parseFloat(m[1].replace(',','.'))+d;f.value=n<=0?'':String(Math.round(n*100)/100).replace('.',',')+m[2]}
+  else if(!f.value.trim()&&d>0)f.value='2';
+}
+function saveEdit(){
+  const it=S.items.find(i=>i.id===edit.id);if(!it)return closeSheet();
+  const name=cap($('#f-name').value.trim());if(!name){toast('Le produit doit avoir un nom');return}
+  it.name=name;it.key=pkey(name);it.qty=$('#f-qty').value.trim();it.note=$('#f-note').value.trim();it.store=edit.store;it.aisle=edit.aisle;
+  learn(it);save();closeSheet();render();
+}
+function delItem(){const snap=JSON.stringify(S);const it=S.items.find(i=>i.id===edit.id);S.items=S.items.filter(i=>i.id!==edit.id);save();closeSheet();render();toast('Supprimé : '+(it?.name||''),snap)}
+let setStore='carrefour';
+function openSettings(){
+  const nh=Object.keys(S.hist).length;
+  openSheet(`<h2>Réglages</h2>
+  <h3>Ordre des rayons (ton parcours en magasin)</h3>
+  <div class="seg" id="o-store">${STORES.map(s=>`<button type="button" style="--c:var(--${s.id})" class="${s.id===setStore?'on':''}" data-act="ostore" data-v="${s.id}">${esc(s.name)}</button>`).join('')}</div>
+  <div class="lst" id="olist"></div>
+  <button class="wide" data-act="oreset" style="margin-top:8px">↺ Ordre par défaut pour ${esc(SID[setStore].name)}</button>
+  <h3>Sauvegarde</h3>
+  <p class="small-muted">Tes données restent uniquement sur ce téléphone. Exporte de temps en temps pour ne rien perdre (ou pour passer sur un autre appareil).</p>
+  <button class="wide" data-act="export">⬇︎ Exporter mes données</button>
+  <label class="wide" style="cursor:pointer">⬆︎ Importer une sauvegarde<input type="file" id="imp" accept="application/json,.json" hidden></label>
+  <h3>Mémoire</h3>
+  <p class="small-muted">${nh} produit${nh>1?'s':''} mémorisé${nh>1?'s':''} · ${S.trips.length} course${S.trips.length>1?'s':''} terminée${S.trips.length>1?'s':''}.</p>
+  <button class="wide" data-act="clearlist">Vider la liste actuelle</button>
+  <button class="wide red" data-act="clearhist">Effacer l'historique et les suggestions</button>
+  <h3>Astuces</h3>
+  <p class="small-muted">• Écris ou dicte plusieurs produits d'un coup : « lait, pain et 6 œufs chez Biocoop ».<br>• « pour … » ou des parenthèses deviennent une remarque : « farine pour le gâteau ».<br>• Le bouton 🔆 garde l'écran allumé pendant les courses.<br>• Touche ••• pour changer le magasin ou le rayon : l'app s'en souviendra.</p>
+  <div class="actions"><button class="btn primary" data-act="close">Fermer</button></div>`);
+  renderOrder();
+}
+function renderOrder(){
+  const o=order(setStore);
+  $('#olist').innerHTML=o.map((a,i)=>`<div class="lrow"><span>${AID[a].icon} ${esc(AID[a].name)}</span><button data-act="omove" data-i="${i}" data-d="-1" ${i===0?'disabled':''} aria-label="Monter">↑</button><button data-act="omove" data-i="${i}" data-d="1" ${i===o.length-1?'disabled':''} aria-label="Descendre">↓</button></div>`).join('');
+}
+async function exportData(){
+  const txt=JSON.stringify({app:'courses',v:1,date:new Date().toISOString(),data:S},null,1);
+  const fname='courses-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json';
+  try{
+    const file=new File([txt],fname,{type:'application/json'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Sauvegarde Courses'});return}
+  }catch(e){if(e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+}
+function importData(file){
+  const r=new FileReader();
+  r.onload=()=>{try{const o=JSON.parse(r.result);const d=o.data||o;if(!d.items||!d.hist)throw 0;
+    if(!confirm('Remplacer les données actuelles par cette sauvegarde ?'))return;
+    const snap=JSON.stringify(S);initState(d);save();closeSheet();render();toast('Sauvegarde importée ✓',snap)}catch(e){toast('Fichier de sauvegarde invalide')}};
+  r.readAsText(file);
+}
+document.addEventListener('change',e=>{if(e.target.id==='imp'&&e.target.files[0])importData(e.target.files[0])});
+/* ---------- Partage ---------- */
+async function shareList(){
+  const stores=view.tab==='all'?STORES:[SID[view.tab]];
+  let txt='';
+  for(const st of stores){
+    const todo=S.items.filter(i=>i.store===st.id&&!i.done);if(!todo.length)continue;
+    txt+=`🛒 ${st.name.toUpperCase()}\n`;
+    for(const a of order(st.id)){const g=todo.filter(i=>i.aisle===a);if(!g.length)continue;
+      txt+=`${AID[a].icon} ${AID[a].name}\n`+g.map(i=>`  ☐ ${i.name}${i.qty?' – '+i.qty:''}${i.note?' ('+i.note+')':''}`).join('\n')+'\n';}
+    txt+='\n';
+  }
+  txt=txt.trim();if(!txt){toast('Rien à partager');return}
+  try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(txt);toast('Liste copiée ✓')}catch(e){toast('Partage indisponible')}
+}
+/* ---------- Écran allumé ---------- */
+let lock=null,wantLock=false;
+async function setWake(on){
+  wantLock=on;
+  if(on){try{lock=await navigator.wakeLock.request('screen');lock.addEventListener('release',()=>{lock=null;if(!wantLock)$('#wake').classList.remove('on')})}catch(e){wantLock=false;toast("Ton iPhone ne permet pas de garder l'écran allumé ici");}}
+  else{try{await lock?.release()}catch(e){}lock=null}
+  $('#wake').classList.toggle('on',wantLock);
+  if(on&&wantLock)toast("L'écran restera allumé 🔆");
+}
+document.addEventListener('visibilitychange',()=>{if(wantLock&&document.visibilityState==='visible'&&!lock)navigator.wakeLock?.request('screen').then(l=>lock=l).catch(()=>{})});
+$('#wake').addEventListener('click',()=>setWake(!wantLock));
+$('#share').addEventListener('click',shareList);
+$('#settings').addEventListener('click',openSettings);
+/* ---------- Voix ---------- */
+let rec=null;
+function voiceFallback(err){
+  $('#listen').classList.remove('show');
+  inp.focus();
+  toast(err==='not-allowed'||err==='service-not-allowed'
+    ?"Micro refusé. Utilise le 🎤 du clavier iPhone, puis valide."
+    :"Dictée directe indisponible ici : touche le 🎤 du clavier iPhone, dicte, puis valide.");
+}
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){voiceFallback();return}
+  if(rec){try{rec.stop()}catch(e){}return}
+  let finalT='',interim='',err=null;
+  try{rec=new SR()}catch(e){voiceFallback();return}
+  rec.lang='fr-FR';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
+  $('#ltext').textContent="Je t'écoute…";$('#listen').classList.add('show');
+  rec.onresult=e=>{interim='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)finalT+=r[0].transcript+' ';else interim+=r[0].transcript}$('#ltext').textContent=(finalT+interim).trim()||'…'};
+  rec.onerror=e=>{err=e.error};
+  rec.onend=()=>{rec=null;$('#listen').classList.remove('show');const t=(finalT+interim).trim();
+    if(t)addText(t,true);else if(err&&err!=='no-speech'&&err!=='aborted')voiceFallback(err);else toast("Je n'ai rien entendu");};
+  try{rec.start()}catch(e){rec=null;voiceFallback()}
+}
+$('#mic').addEventListener('click',startVoice);
+$('#stopListen').addEventListener('click',()=>{try{rec?.stop()}catch(e){$('#listen').classList.remove('show')}});
+/* ---------- Toast ---------- */
+let toastT,undoSnap=null;
+function toast(msg,snap){
+  const el=$('#toast');undoSnap=snap||null;
+  el.innerHTML=`<span>${esc(msg)}</span>${snap?'<button data-act="undo">Annuler</button>':''}`;
+  el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),snap?5000:2800);
+}
+/* ---------- Clics ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const a=el.dataset.act;
+  switch(a){
+    case 'tab':view.tab=el.dataset.tab;lsSet('courses.tab',view.tab);render();window.scrollTo({top:0});break;
+    case 'toggle':toggle(el.dataset.id);break;
+    case 'edit':e.stopPropagation();openEdit(el.dataset.id);break;
+    case 'finish':finish(el.dataset.store);break;
+    case 'sug':case 'ac':addFromHist(el.dataset.key);if(a==='ac'){inp.value='';updatePanel()}break;
+    case 'redo':redoLast(el.dataset.store);break;
+    case 'sugtoggle':view.sugHidden=!view.sugHidden;lsSet('courses.sugHidden',view.sugHidden?'1':'0');renderSug();break;
+    case 'hidebanner':lsSet('courses.banner','0');renderBanner();break;
+    case 'undo':if(undoSnap){initState(JSON.parse(undoSnap));undoSnap=null;save();render();$('#toast').classList.remove('show')}break;
+    case 'qty':bumpQty(+el.dataset.d);break;
+    case 'fstore':edit.store=el.dataset.v;document.querySelectorAll('#f-store button').forEach(b=>b.classList.toggle('on',b===el));break;
+    case 'faisle':edit.aisle=el.dataset.v;document.querySelectorAll('#f-aisle button').forEach(b=>b.classList.toggle('on',b===el));break;
+    case 'savedit':saveEdit();break;
+    case 'del':delItem();break;
+    case 'close':closeSheet();break;
+    case 'ostore':setStore=el.dataset.v;document.querySelectorAll('#o-store button').forEach(b=>b.classList.toggle('on',b===el));renderOrder();el.closest('.sheet').querySelector('[data-act="oreset"]').textContent='↺ Ordre par défaut pour '+SID[setStore].name;break;
+    case 'omove':{const o=order(setStore),i=+el.dataset.i,j=i+ +el.dataset.d;[o[i],o[j]]=[o[j],o[i]];S.settings.order[setStore]=o;save();renderOrder();render();break}
+    case 'oreset':delete S.settings.order[setStore];save();renderOrder();render();toast('Ordre réinitialisé');break;
+    case 'export':exportData();break;
+    case 'clearlist':{if(!S.items.length)break;const snap=JSON.stringify(S);S.items=[];save();render();closeSheet();toast('Liste vidée',snap);break}
+    case 'clearhist':{if(!confirm("Effacer tout l'historique ? Les suggestions repartiront de zéro."))break;const snap=JSON.stringify(S);S.hist={};S.trips=[];save();render();closeSheet();toast('Historique effacé',snap);break}
+  }
+});
+/* ---------- Clavier iOS : garder la barre au-dessus ---------- */
+if(window.visualViewport){
+  const vv=window.visualViewport;
+  const fix=()=>{const off=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);$('#composer').style.transform=off?`translateY(${-off}px)`:''};
+  vv.addEventListener('resize',fix);vv.addEventListener('scroll',fix);
+}
+/* ---------- Démarrage ---------- */
+render();
+navigator.storage?.persist?.().catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
